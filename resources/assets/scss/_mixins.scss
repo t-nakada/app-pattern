@@ -1,0 +1,86 @@
+@charset "utf-8";
+
+/*
+  rem を使ったフォントサイズ指定
+  call: @include font-size(12);
+*/
+html { font-size: 62.5%; }
+@mixin font-size($size, $base: 10) {
+  font-size: $size + px;
+  font-size: ($size / $base) + rem;
+}
+
+
+/*
+  透明度
+  call: @include opacity(0.5);
+*/
+@mixin opacity($opacity) {
+  opacity: $opacity;
+  $opacityIE: $opacity * 100;
+  filter: alpha(opacity=$opacityIE);
+}
+
+/*
+  背景透過
+  call: @include rgba-background(rgba(0, 0, 0, .5));
+*/
+@mixin rgba-background($color){
+  @include filter-gradient($color, $color);
+  @if $legacy-support-for-ie6 or $legacy-support-for-ie7 or $legacy-support-for-ie8 {
+    background: transparent;
+
+    // set filter as none for IE9+, because IE9+ supprot RGBa
+    :root & {
+      filter: none\0/IE9;}
+  }
+  background: $color;
+}
+
+/*
+  テキストシャドウ
+  薄い背景＋濃い色文字 の場合 白い影 光源と同方向↙
+  call: @include ts-fff(.7);
+  黒文字に白のシャドウを入れる場合は、@include text-shadow($white, 1);
+*/
+@mixin ts-fff($op:.5){
+  text-shadow: -1px 1px 0 rgba(255, 255, 255, $op);
+}
+
+/*
+  テキストシャドウ
+  濃い背景＋白抜き文字 の場合 黒い影 光源と逆方向↗
+  call: @include ts-000(.4);
+*/
+
+@mixin ts-000($op:.4){
+  text-shadow: 1px -1px 0 rgba(0, 0, 0, $op);
+}
+
+
+/*
+  背景画像 Retina 対応
+  call: @include background-image-retina($file, $type, $width: 100%, $height: 100%, $bgwidth: $width, $bgheight: $height );
+*/
+
+//@mixin bgretina($bgwidth, $bgHeight, $bgCol, $image, $extension, $posX:0, $posY:0, $repeat:no-repeat, $ratio:'@2x') {
+//  background: $bgCol url($image + '.' + $extension) $posX $posY $repeat;
+//  @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+//  only screen and (min-resolution: 192dpi) {
+//    background-image: url($image + $ratio + '.' + $extension);
+//    @include background-size($bgwidth $bgHeight);
+//  }
+//}
+
+@mixin background-image-retina($file, $type, $width: 100%, $height: 100%, $bgwidth: $width, $bgheight: $height ) {
+  background-image: image-url($file + '.' + $type);
+  width:  $width;
+  height: $height;
+  @include background-size($width $height);
+  @media (-webkit-min-device-pixel-ratio: 2), (-moz-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {
+    & {
+      background-image: image-url($file + '@2x.' + $type);
+
+    }
+  }
+}
