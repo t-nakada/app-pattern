@@ -153,8 +153,9 @@ return [
         'Illuminate\Mail\MailServiceProvider',
 
         /*
-         * Debug bar
+         * IDE helper & Debug bar
          */
+        'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
         'Barryvdh\Debugbar\ServiceProvider',
 
         /*
